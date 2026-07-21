@@ -1,0 +1,89 @@
+name: gaza_edu_bridge
+description: "GazaEdu Bridge - منصة غزة للتعلم الذاتي"
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # ─── State Management ───────────────────────────────
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # ─── Navigation ─────────────────────────────────────
+  go_router: ^14.8.1
+
+  # ─── DI ─────────────────────────────────────────────
+  get_it: ^8.0.3
+  injectable: ^2.5.0
+
+  # ─── Firebase ───────────────────────────────────────
+  firebase_core: ^3.14.0
+  firebase_auth: ^5.6.0
+  cloud_firestore: ^5.6.9
+  firebase_storage: ^12.4.6
+  firebase_analytics: ^11.4.6
+  firebase_crashlytics: ^4.3.6
+  google_sign_in: ^6.2.2
+
+  # ─── Local Storage ──────────────────────────────────
+  hive_flutter: ^1.1.0
+  shared_preferences: ^2.3.5
+  path_provider: ^2.1.5
+  flutter_secure_storage: ^9.2.4
+
+  # ─── Network / Download ─────────────────────────────
+  dio: ^5.8.0+1
+  connectivity_plus: ^6.1.4
+
+  # ─── Errors ─────────────────────────────────────────
+  fpdart: ^1.1.0
+  equatable: ^2.0.7
+
+  # ─── UI ─────────────────────────────────────────────
+  cupertino_icons: ^1.0.8
+  cached_network_image: ^3.4.1
+  shimmer: ^3.0.0
+  flutter_animate: ^4.5.2
+
+  # ─── Utils ──────────────────────────────────────────
+  intl: ^0.20.2
+  logger: ^2.5.0
+  url_launcher: ^6.3.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  # riverpod_generator و injectable_generator بدون hive_generator لتفادي التعارض
+  riverpod_generator: ^2.6.1
+  injectable_generator: ^2.7.0
+  build_runner: ^2.4.15
+  mockito: ^5.4.5
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/lottie/
+
+  fonts:
+    - family: Tajawal
+      fonts:
+        - asset: assets/fonts/Tajawal-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Tajawal-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Tajawal-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Tajawal-ExtraBold.ttf
+          weight: 800

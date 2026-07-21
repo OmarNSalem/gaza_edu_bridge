@@ -1,0 +1,105 @@
+{
+  "@@locale": "en",
+  "appName": "GazaEdu Bridge",
+  "appTagline": "Gaza Self-Learning Platform",
+  "university": "Palestine University — 2025/2026",
+
+  "skip": "Skip",
+  "next": "Next",
+  "startNow": "Get Started",
+  "back": "Back",
+  "open": "Open",
+  "download": "Download",
+  "delete": "Delete",
+  "retry": "Retry",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "logout": "Logout",
+
+  "onboarding1Title": "تعلّم بدون إنترنت",
+  "onboarding1TitleEn": "Learn Offline",
+  "onboarding1Body": "Download materials once and keep learning even without internet.",
+  "onboarding2Title": "حمّل ملفاتك بسهولة",
+  "onboarding2TitleEn": "Easy Downloads",
+  "onboarding2Body": "PDF files organized by grade, small in size and ready to read anytime.",
+
+  "welcome": "Welcome",
+  "continueWithGoogle": "Continue with Google",
+  "login": "Login",
+  "register": "Sign Up",
+  "continueAsGuest": "Continue as Guest",
+  "guestNote": "No registration — temporary",
+  "orContinueWithout": "Or continue without account",
+  "fullName": "Full Name",
+  "email": "Email",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+  "createNewAccount": "Create New Account",
+  "alreadyHaveAccount": "Already have an account? ",
+  "dontHaveAccount": "Don't have an account? ",
+  "createAccount": "Create Account",
+
+  "home": "Home",
+  "browse": "Browse",
+  "quizzes": "Quizzes",
+  "downloads": "Downloads",
+
+  "levelPrimary": "Primary",
+  "levelMiddle": "Middle",
+  "levelHigh": "High School",
+  "levelAll": "All",
+  "gradeLabel": "Grade {grade}",
+  "@gradeLabel": {
+    "placeholders": {
+      "grade": { "type": "int" }
+    }
+  },
+  "branchScience": "Science",
+  "branchArts": "Arts",
+
+  "searchHint": "Search for a subject...",
+  "noSubjectsFound": "No subjects match your search",
+  "files": "{count} files",
+  "@files": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "typeSummary": "Summary",
+  "typeExplanation": "Explanation",
+  "typeExercises": "Exercises",
+
+  "downloadedNote": "Downloaded",
+  "downloadingNote": "Downloading...",
+  "deleteDownload": "Delete Download",
+  "totalStorage": "Total Storage",
+  "noDownloads": "No downloads yet",
+  "noDownloadsBody": "Download materials from the browse page to access them offline",
+
+  "quizSelectSubject": "Select a subject for quiz",
+  "quizStart": "Start Quiz",
+  "questionOf": "Question {current} of {total}",
+  "@questionOf": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "correctAnswer": "Correct",
+  "wrongAnswer": "Wrong",
+  "quizResult": "Your Score",
+  "scoreOf": "{score} out of {total}",
+  "@scoreOf": {
+    "placeholders": {
+      "score": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "retryQuiz": "Retry Quiz",
+
+  "offlineBanner": "You are offline — showing cached data",
+  "loading": "Loading...",
+  "errorGeneral": "Something went wrong, please try again",
+  "guestNoSave": "Guest progress is not saved"
+}

@@ -1,0 +1,105 @@
+{
+  "@@locale": "ar",
+  "appName": "GazaEdu Bridge",
+  "appTagline": "منصة غزة للتعلم الذاتي",
+  "university": "جامعة فلسطين — 2025/2026",
+
+  "skip": "تخطي",
+  "next": "التالي",
+  "startNow": "ابدأ الآن",
+  "back": "رجوع",
+  "open": "فتح",
+  "download": "تنزيل",
+  "delete": "حذف",
+  "retry": "إعادة المحاولة",
+  "cancel": "إلغاء",
+  "confirm": "تأكيد",
+  "logout": "خروج",
+
+  "onboarding1Title": "تعلّم بدون إنترنت",
+  "onboarding1TitleEn": "Learn Offline",
+  "onboarding1Body": "نزّل المواد مرة واحدة واستمر في التعلم حتى بدون اتصال بالإنترنت.",
+  "onboarding2Title": "حمّل ملفاتك بسهولة",
+  "onboarding2TitleEn": "Easy Downloads",
+  "onboarding2Body": "ملفات PDF منظمة حسب المرحلة والصف، بأحجام صغيرة وجاهزة للقراءة في أي وقت.",
+
+  "welcome": "مرحباً بك",
+  "continueWithGoogle": "متابعة بحساب Google",
+  "login": "تسجيل دخول",
+  "register": "إنشاء حساب",
+  "continueAsGuest": "متابعة كضيف",
+  "guestNote": "بدون تسجيل — مؤقت",
+  "orContinueWithout": "أو تابع بدون حساب",
+  "fullName": "الاسم الكامل",
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "confirmPassword": "تأكيد كلمة المرور",
+  "createNewAccount": "إنشاء حساب جديد",
+  "alreadyHaveAccount": "لديك حساب بالفعل؟ ",
+  "dontHaveAccount": "ليس لديك حساب؟ ",
+  "createAccount": "إنشاء الحساب",
+
+  "home": "الرئيسية",
+  "browse": "التصفح",
+  "quizzes": "اختبارات",
+  "downloads": "تنزيلات",
+
+  "levelPrimary": "ابتدائي",
+  "levelMiddle": "إعدادي",
+  "levelHigh": "ثانوي",
+  "levelAll": "الكل",
+  "gradeLabel": "صف {grade}",
+  "@gradeLabel": {
+    "placeholders": {
+      "grade": { "type": "int" }
+    }
+  },
+  "branchScience": "علمي",
+  "branchArts": "أدبي",
+
+  "searchHint": "ابحث عن مادة...",
+  "noSubjectsFound": "لا توجد مواد مطابقة للبحث",
+  "files": "{count} ملف",
+  "@files": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "typeSummary": "ملخص",
+  "typeExplanation": "شرح",
+  "typeExercises": "تمارين",
+
+  "downloadedNote": "تم التنزيل",
+  "downloadingNote": "جاري التنزيل...",
+  "deleteDownload": "حذف التنزيل",
+  "totalStorage": "إجمالي المساحة",
+  "noDownloads": "لا توجد تنزيلات بعد",
+  "noDownloadsBody": "نزّل المواد من صفحة التصفح للوصول إليها أوفلاين",
+
+  "quizSelectSubject": "اختر مادة للاختبار",
+  "quizStart": "بدء الاختبار",
+  "questionOf": "سؤال {current} من {total}",
+  "@questionOf": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "correctAnswer": "إجابة صحيحة",
+  "wrongAnswer": "إجابة خاطئة",
+  "quizResult": "نتيجتك",
+  "scoreOf": "{score} من {total}",
+  "@scoreOf": {
+    "placeholders": {
+      "score": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "retryQuiz": "إعادة الاختبار",
+
+  "offlineBanner": "أنت في وضع أوفلاين — تعرض البيانات المحفوظة مسبقاً",
+  "loading": "جاري التحميل...",
+  "errorGeneral": "حدث خطأ، يرجى المحاولة مجدداً",
+  "guestNoSave": "الضيف لا يحفظ تقدمه"
+}
