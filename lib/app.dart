@@ -1,45 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'core/router/app_router.dart';
 import 'core/theme/app_theme.dart';
+import 'l10n/app_localizations.dart';
 
-// TODO: استبدل بـ GoRouter لاحقاً في PHASE 3
+/// نقطة دخول التطبيق — MaterialApp.router مع GoRouter + AppLocalizations
 class GazaEduBridgeApp extends ConsumerWidget {
   const GazaEduBridgeApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp(
+    final router = ref.watch(appRouterProvider);
+
+    return MaterialApp.router(
       title: 'GazaEdu Bridge',
       debugShowCheckedModeBanner: false,
 
-      // ─── Theme: Dark فقط ─────────────────────────────
+      // ─── Theme: Dark Mode فقط ────────────────────────
       theme: AppTheme.darkTheme,
       themeMode: ThemeMode.dark,
 
       // ─── اللغة الافتراضية: عربي RTL ─────────────────
       locale: const Locale('ar'),
-      supportedLocales: const [
-        Locale('ar'),
-        Locale('en'),
-      ],
+      supportedLocales: const [Locale('ar'), Locale('en')],
       localizationsDelegates: const [
+        AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
         GlobalCupertinoLocalizations.delegate,
       ],
 
-      // ─── الشاشة الأولى (مؤقت — سيُستبدل بـ GoRouter) ─
-      home: const Scaffold(
-        body: Center(
-          child: Text(
-            'GazaEdu Bridge\nجاري الإعداد...',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white, fontSize: 18),
-          ),
-        ),
-      ),
+      // ─── Navigation عبر GoRouter ─────────────────────
+      routerConfig: router,
     );
   }
 }
