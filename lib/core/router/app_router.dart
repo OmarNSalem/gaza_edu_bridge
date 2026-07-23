@@ -8,8 +8,8 @@ import '../../features/home/presentation/screens/home_screen.dart';
 import '../../features/subjects/presentation/screens/browse_screen.dart';
 import '../../features/resources/presentation/screens/resources_screen.dart';
 import '../../features/downloads/presentation/screens/downloads_screen.dart';
+import '../../features/quiz/presentation/screens/quiz_screen.dart';
 import '../../shared/widgets/app_shell.dart';
-import '../../shared/widgets/placeholder_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
@@ -63,8 +63,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: RouteNames.quiz,
-                builder: (context, state) =>
-                    const PlaceholderScreen(title: 'الاختبار'),
+                builder: (context, state) => const QuizScreen(),
               ),
             ],
           ),

@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_text_styles.dart';
-import '../../core/theme/app_spacing.dart';
-import '../../core/theme/app_border_radius.dart';
+import 'package:gaza_edu_bridge/core/theme/app_colors.dart';
+import 'package:gaza_edu_bridge/core/theme/app_spacing.dart';
+import 'package:gaza_edu_bridge/core/theme/app_text_styles.dart';
 
-/// عرض حالة القائمة الفارغة مع رسالة توجيهية
 class AppEmptyWidget extends StatelessWidget {
   const AppEmptyWidget({
     super.key,
-    required this.message,
+    this.message = 'لا توجد بيانات متاحة حالياً',
     this.subMessage,
     this.icon = Icons.inbox_outlined,
   });
@@ -21,32 +19,30 @@ class AppEmptyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(AppSpacing.xl),
+        padding: const EdgeInsets.all(AppSpacing.lg),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              width: 80,
-              height: 80,
+              width: 64,
+              height: 64,
               decoration: const BoxDecoration(
-                color: AppColors.card,
-                borderRadius: AppBorderRadius.extraLargeRadius,
+                color: AppColors.secondary,
+                shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: AppColors.mutedForeground, size: 36),
+              child: Icon(icon, size: 32, color: AppColors.mutedText),
             ),
-            const SizedBox(height: AppSpacing.lg),
+            const SizedBox(height: AppSpacing.md),
             Text(
               message,
-              style: AppTextStyles.bodyMedium
-                  .copyWith(color: AppColors.foreground),
+              style: AppTextStyles.cardTitle,
               textAlign: TextAlign.center,
             ),
             if (subMessage != null) ...[
-              const SizedBox(height: AppSpacing.sm),
+              const SizedBox(height: 4),
               Text(
                 subMessage!,
-                style: AppTextStyles.caption
-                    .copyWith(color: AppColors.mutedForeground),
+                style: AppTextStyles.bodySmall,
                 textAlign: TextAlign.center,
               ),
             ],

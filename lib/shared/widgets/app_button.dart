@@ -1,102 +1,66 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_colors.dart';
-import '../../core/theme/app_text_styles.dart';
-import '../../core/theme/app_border_radius.dart';
+import 'package:gaza_edu_bridge/core/theme/app_border_radius.dart';
+import 'package:gaza_edu_bridge/core/theme/app_colors.dart';
+import 'package:gaza_edu_bridge/core/theme/app_text_styles.dart';
 
-/// نوع الزر — primary بـ gradient أخضر، secondary بحد outlined
-enum AppButtonVariant { primary, secondary }
-
-/// زر موحّد يُستخدم في كل شاشات التطبيق
 class AppButton extends StatelessWidget {
   const AppButton({
     super.key,
-    required this.label,
+    required this.text,
     required this.onPressed,
-    this.variant = AppButtonVariant.primary,
     this.isLoading = false,
     this.icon,
-    this.width = double.infinity,
+    this.backgroundColor,
+    this.textColor,
   });
 
-  final String label;
+  final String text;
   final VoidCallback? onPressed;
-  final AppButtonVariant variant;
   final bool isLoading;
   final IconData? icon;
-  final double width;
+  final Color? backgroundColor;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
-    final isPrimary = variant == AppButtonVariant.primary;
+    final bg = backgroundColor ?? AppColors.primary;
+    final fg = textColor ?? Colors.white;
 
-    return SizedBox(
-      width: width,
-      height: 52,
-      child: isPrimary
-          ? DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: onPressed == null
-                    ? null
-                    : AppColors.primaryButtonGradient,
-                color: onPressed == null ? AppColors.border : null,
-                borderRadius: AppBorderRadius.largeRadius,
-              ),
-              child: ElevatedButton(
-                onPressed: isLoading ? null : onPressed,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: AppBorderRadius.largeRadius,
-                  ),
-                ),
-                child: _buildChild(isPrimary),
+    return ElevatedButton(
+      onPressed: isLoading ? null : onPressed,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: bg,
+        foregroundColor: fg,
+        disabledBackgroundColor: bg.withValues(alpha: 0.4),
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 20),
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: AppBorderRadius.roundedLg,
+        ),
+      ),
+      child: isLoading
+          ? SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: fg,
               ),
             )
-          : OutlinedButton(
-              onPressed: isLoading ? null : onPressed,
-              style: OutlinedButton.styleFrom(
-                side: const BorderSide(color: AppColors.border),
-                shape: const RoundedRectangleBorder(
-                  borderRadius: AppBorderRadius.largeRadius,
+          : Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (icon != null) ...[
+                  Icon(icon, size: 18, color: fg),
+                  const SizedBox(width: 8),
+                ],
+                Text(
+                  text,
+                  style: AppTextStyles.buttonText.copyWith(color: fg),
                 ),
-              ),
-              child: _buildChild(isPrimary),
+              ],
             ),
-    );
-  }
-
-  /// محتوى الزر — loading spinner أو أيقونة + نص
-  Widget _buildChild(bool isPrimary) {
-    if (isLoading) {
-      return SizedBox(
-        width: 20,
-        height: 20,
-        child: CircularProgressIndicator(
-          strokeWidth: 2,
-          color: isPrimary ? Colors.white : AppColors.primary,
-        ),
-      );
-    }
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        if (icon != null) ...[
-          Icon(
-            icon,
-            size: 18,
-            color: isPrimary ? Colors.white : AppColors.foreground,
-          ),
-          const SizedBox(width: 8),
-        ],
-        Text(
-          label,
-          style: AppTextStyles.button.copyWith(
-            color: isPrimary ? Colors.white : AppColors.foreground,
-          ),
-        ),
-      ],
     );
   }
 }

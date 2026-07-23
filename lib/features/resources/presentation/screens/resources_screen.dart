@@ -8,6 +8,8 @@ import 'package:gaza_edu_bridge/core/utils/mock_data.dart';
 import 'package:gaza_edu_bridge/features/resources/domain/entities/resource_entity.dart';
 import 'package:gaza_edu_bridge/features/subjects/domain/entities/subject_entity.dart';
 import 'package:gaza_edu_bridge/shared/widgets/app_header.dart';
+import '../widgets/resource_tab_button.dart';
+import '../widgets/resource_item_card.dart';
 
 class ResourcesScreen extends StatefulWidget {
   const ResourcesScreen({super.key, this.subjectId});
@@ -28,19 +30,16 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
   @override
   void initState() {
     super.initState();
-    // الحصول على المادة المحددة أو المادة الافتراضية الأولى
     final targetId = widget.subjectId ?? 'math-h12-sci';
     _subject = MockData.subjects.firstWhere(
       (s) => s.id == targetId,
       orElse: () => MockData.subjects.first,
     );
 
-    // تصفية الموارد التابعة لهذه المادة
     _subjectResources = MockData.resources
         .where((r) => r.subjectId == _subject.id)
         .toList();
 
-    // إذا لم تكن هناك موارد معرفة لهذه المادة بالذات في Mock Data، نولد موارد افتراضية غنية
     if (_subjectResources.isEmpty) {
       _subjectResources = [
         ResourceEntity(
@@ -90,11 +89,7 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
       return;
     }
 
-    setState(() {
-      _loadingState[res.id] = true;
-    });
-
-    // محاكاة تنزيل الملف
+    setState(() => _loadingState[res.id] = true);
     await Future.delayed(const Duration(seconds: 1));
 
     if (!mounted) return;
@@ -140,7 +135,6 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
       ),
       body: Column(
         children: [
-          // ── Subject Info Header ──
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(AppSpacing.lg),
@@ -193,8 +187,6 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
               ],
             ),
           ),
-
-          // ── Category Tabs ──
           Container(
             color: AppColors.cardBg,
             child: SingleChildScrollView(
@@ -203,27 +195,27 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                   horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
               child: Row(
                 children: [
-                  _TabButton(
+                  ResourceTabButton(
                     label: 'الكل (${_subjectResources.length})',
                     isSelected: _selectedTab == null,
                     onTap: () => setState(() => _selectedTab = null),
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  _TabButton(
+                  ResourceTabButton(
                     label: 'الكتب الوزارية',
                     isSelected: _selectedTab == ResourceCategory.book,
                     onTap: () =>
                         setState(() => _selectedTab = ResourceCategory.book),
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  _TabButton(
+                  ResourceTabButton(
                     label: 'الملخصات والشروحات',
                     isSelected: _selectedTab == ResourceCategory.summary,
                     onTap: () =>
                         setState(() => _selectedTab = ResourceCategory.summary),
                   ),
                   const SizedBox(width: AppSpacing.sm),
-                  _TabButton(
+                  ResourceTabButton(
                     label: 'الامتحانات الوزارية',
                     isSelected: _selectedTab == ResourceCategory.exam,
                     onTap: () =>
@@ -233,10 +225,7 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
               ),
             ),
           ),
-
           const Divider(height: 1, color: AppColors.border),
-
-          // ── Resource List ──
           Expanded(
             child: filtered.isEmpty
                 ? Center(
@@ -256,16 +245,13 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
                     itemCount: filtered.length,
                     itemBuilder: (context, index) {
                       final res = filtered[index];
-                      final isDownloaded =
-                          _downloadState[res.id] ?? res.isDownloaded;
-                      final isLoading = _loadingState[res.id] ?? false;
-
                       return Padding(
                         padding: const EdgeInsets.only(bottom: AppSpacing.md),
-                        child: _ResourceCard(
+                        child: ResourceItemCard(
                           resource: res,
-                          isDownloaded: isDownloaded,
-                          isLoading: isLoading,
+                          isDownloaded:
+                              _downloadState[res.id] ?? res.isDownloaded,
+                          isLoading: _loadingState[res.id] ?? false,
                           onAction: () => _handleDownload(res),
                         ),
                       );
@@ -276,256 +262,30 @@ class _ResourcesScreenState extends State<ResourcesScreen> {
       ),
     );
   }
-}
 
-// ─── Component Tab Button ───────────────────────────────────────────────────
-
-class _TabButton extends StatelessWidget {
-  const _TabButton({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-        decoration: BoxDecoration(
-          color: isSelected ? AppColors.primary : AppColors.secondary,
-          borderRadius: AppBorderRadius.roundedLg,
-        ),
-        child: Text(
-          label,
-          style: AppTextStyles.badgeText.copyWith(
-            color: isSelected ? Colors.white : AppColors.foregroundText,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-            fontSize: 12,
-          ),
-        ),
-      ),
-    );
+  Color _colorFromHex(String hex) {
+    final h = hex.replaceAll('#', '');
+    return Color(int.parse('FF$h', radix: 16));
   }
-}
 
-// ─── Resource Card Widget ───────────────────────────────────────────────────
+  IconData _iconData(String icon) => switch (icon) {
+        'calculator' => Icons.calculate_outlined,
+        'book' => Icons.menu_book_rounded,
+        'flask' => Icons.science_outlined,
+        'globe' => Icons.language_rounded,
+        'landmark' => Icons.account_balance_outlined,
+        'microscope' => Icons.biotech_outlined,
+        _ => Icons.book_outlined,
+      };
 
-class _ResourceCard extends StatelessWidget {
-  const _ResourceCard({
-    required this.resource,
-    required this.isDownloaded,
-    required this.isLoading,
-    required this.onAction,
-  });
+  String _levelLabel(SchoolLevel level) => switch (level) {
+        SchoolLevel.primary => 'ابتدائي',
+        SchoolLevel.middle => 'إعدادي',
+        SchoolLevel.high => 'ثانوي',
+      };
 
-  final ResourceEntity resource;
-  final bool isDownloaded;
-  final bool isLoading;
-  final VoidCallback onAction;
-
-  @override
-  Widget build(BuildContext context) {
-    final catColor = _categoryColor(resource.category);
-
-    return Container(
-      padding: const EdgeInsets.all(AppSpacing.md),
-      decoration: BoxDecoration(
-        color: AppColors.cardBg,
-        borderRadius: AppBorderRadius.roundedXl,
-        border: Border.all(color: AppColors.border),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: catColor.withValues(alpha: 0.12),
-                  borderRadius: AppBorderRadius.roundedLg,
-                ),
-                child: Icon(_categoryIcon(resource.category),
-                    size: 20, color: catColor),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      resource.title,
-                      style: AppTextStyles.cardTitle.copyWith(fontSize: 14),
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      resource.description,
-                      style: AppTextStyles.bodySmall.copyWith(fontSize: 12),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // معلومات الملف (الحجم والمفحات)
-              Row(
-                children: [
-                  _BadgeInfo(
-                    label: '${resource.fileSizeMb} MB',
-                    icon: Icons.picture_as_pdf_outlined,
-                  ),
-                  const SizedBox(width: AppSpacing.sm),
-                  _BadgeInfo(
-                    label: '${resource.pageCount} صفحة',
-                    icon: Icons.description_outlined,
-                  ),
-                ],
-              ),
-
-              // زر التنزيل أو الفتح
-              ElevatedButton.icon(
-                onPressed: isLoading ? null : onAction,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: isDownloaded
-                      ? AppColors.secondary
-                      : AppColors.primary,
-                  foregroundColor:
-                      isDownloaded ? AppColors.foregroundText : Colors.white,
-                  elevation: 0,
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 14, vertical: 8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: AppBorderRadius.roundedLg,
-                  ),
-                ),
-                icon: isLoading
-                    ? const SizedBox(
-                        width: 14,
-                        height: 14,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : Icon(
-                        isDownloaded
-                            ? Icons.menu_book_rounded
-                            : Icons.download_rounded,
-                        size: 16,
-                      ),
-                label: Text(
-                  isLoading
-                      ? 'تحميل...'
-                      : isDownloaded
-                          ? 'فتح الملف'
-                          : 'تنزيل',
-                  style: AppTextStyles.badgeText.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: isDownloaded
-                        ? AppColors.foregroundText
-                        : Colors.white,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _BadgeInfo extends StatelessWidget {
-  const _BadgeInfo({required this.label, required this.icon});
-
-  final String label;
-  final IconData icon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: AppColors.secondary,
-        borderRadius: AppBorderRadius.roundedSm,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 12, color: AppColors.mutedText),
-          const SizedBox(width: 4),
-          Text(
-            label,
-            style: AppTextStyles.badgeText
-                .copyWith(fontSize: 10, color: AppColors.mutedText),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ─── Helpers ──────────────────────────────────────────────────────────────
-
-Color _colorFromHex(String hex) {
-  final h = hex.replaceAll('#', '');
-  return Color(int.parse('FF$h', radix: 16));
-}
-
-IconData _iconData(String icon) {
-  return switch (icon) {
-    'calculator' => Icons.calculate_outlined,
-    'book' => Icons.menu_book_rounded,
-    'flask' => Icons.science_outlined,
-    'globe' => Icons.language_rounded,
-    'landmark' => Icons.account_balance_outlined,
-    'microscope' => Icons.biotech_outlined,
-    _ => Icons.book_outlined,
-  };
-}
-
-Color _categoryColor(ResourceCategory category) {
-  return switch (category) {
-    ResourceCategory.book => AppColors.arabicAccent,
-    ResourceCategory.summary => AppColors.scienceAccent,
-    ResourceCategory.exam => AppColors.chemistryAccent,
-  };
-}
-
-IconData _categoryIcon(ResourceCategory category) {
-  return switch (category) {
-    ResourceCategory.book => Icons.menu_book_rounded,
-    ResourceCategory.summary => Icons.assignment_outlined,
-    ResourceCategory.exam => Icons.quiz_outlined,
-  };
-}
-
-String _levelLabel(SchoolLevel level) {
-  return switch (level) {
-    SchoolLevel.primary => 'ابتدائي',
-    SchoolLevel.middle => 'إعدادي',
-    SchoolLevel.high => 'ثانوي',
-  };
-}
-
-String _branchLabel(SubjectBranch branch) {
-  return switch (branch) {
-    SubjectBranch.science => 'علمي',
-    SubjectBranch.arts => 'أدبي',
-  };
+  String _branchLabel(SubjectBranch branch) => switch (branch) {
+        SubjectBranch.science => 'علمي',
+        SubjectBranch.arts => 'أدبي',
+      };
 }
