@@ -1,47 +1,21 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'route_names.dart';
 import '../../features/auth/presentation/screens/splash_screen.dart';
 import '../../features/auth/presentation/screens/onboarding_screen.dart';
 import '../../features/auth/presentation/screens/auth_screen.dart';
 import '../../features/home/presentation/screens/home_screen.dart';
-import '../../features/browse/presentation/screens/browse_screen.dart';
-import '../../features/quiz/presentation/screens/quiz_screen.dart';
-import '../../features/downloads/presentation/screens/downloads_screen.dart';
+import '../../features/subjects/presentation/screens/browse_screen.dart';
 import '../../features/resources/presentation/screens/resources_screen.dart';
-import '../../features/auth/presentation/providers/auth_notifier.dart';
-import 'route_names.dart';
-import '../shell/app_shell.dart';
+import '../../features/downloads/presentation/screens/downloads_screen.dart';
+import '../../shared/widgets/app_shell.dart';
+import '../../shared/widgets/placeholder_screen.dart';
 
-part 'app_router.g.dart';
-
-/// GoRouter provider — يراقب authNotifierProvider ويُعيد التوجيه تلقائياً
-@riverpod
-GoRouter appRouter(AppRouterRef ref) {
-  final authState = ref.watch(authNotifierProvider);
-
+final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: RouteNames.splash,
-    redirect: (context, state) {
-      // انتظر حتى ينتهي تحميل الـ auth state
-      if (authState.isLoading) return null;
-
-      final user = authState.valueOrNull;
-      final loc = state.matchedLocation;
-
-      // المسارات التي لا تتطلب تسجيل دخول
-      final isAuthRoute = loc == RouteNames.splash ||
-          loc == RouteNames.onboarding ||
-          loc == RouteNames.auth;
-
-      // غير مسجل ويحاول الوصول لصفحة محمية
-      if (user == null && !isAuthRoute) return RouteNames.auth;
-
-      // مسجل ويحاول الوصول لصفحة تسجيل الدخول
-      if (user != null && loc == RouteNames.auth) return RouteNames.home;
-
-      return null;
-    },
     routes: [
+      // ── شاشات بدون BottomNav ──
       GoRoute(
         path: RouteNames.splash,
         builder: (context, state) => const SplashScreen(),
@@ -54,33 +28,56 @@ GoRouter appRouter(AppRouterRef ref) {
         path: RouteNames.auth,
         builder: (context, state) => const AuthScreen(),
       ),
-      ShellRoute(
-        builder: (context, state, child) => AppShell(child: child),
-        routes: [
-          GoRoute(
-            path: RouteNames.home,
-            builder: (context, state) => const HomeScreen(),
+      // ── شاشات مع BottomNav ──
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) =>
+            AppShell(navigationShell: navigationShell),
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.home,
+                builder: (context, state) => const HomeScreen(),
+              ),
+            ],
           ),
-          GoRoute(
-            path: RouteNames.browse,
-            builder: (context, state) => const BrowseScreen(),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.browse,
+                builder: (context, state) {
+                  final initialLevelId = state.extra as String?;
+                  return BrowseScreen(initialLevelId: initialLevelId);
+                },
+              ),
+              GoRoute(
+                path: RouteNames.resources,
+                builder: (context, state) {
+                  final subjectId = state.extra as String?;
+                  return ResourcesScreen(subjectId: subjectId);
+                },
+              ),
+            ],
           ),
-          GoRoute(
-            path: RouteNames.quiz,
-            builder: (context, state) => const QuizScreen(),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.quiz,
+                builder: (context, state) =>
+                    const PlaceholderScreen(title: 'الاختبار'),
+              ),
+            ],
           ),
-          GoRoute(
-            path: RouteNames.downloads,
-            builder: (context, state) => const DownloadsScreen(),
-          ),
-          GoRoute(
-            path: RouteNames.resources,
-            builder: (context, state) => ResourcesScreen(
-              subjectId: state.pathParameters['subjectId']!,
-            ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: RouteNames.downloads,
+                builder: (context, state) => const DownloadsScreen(),
+              ),
+            ],
           ),
         ],
       ),
     ],
   );
-}
+});

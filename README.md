@@ -1,6 +1,6 @@
 # gaza_edu_bridge
 
-GazaEdu Bridge - منصة غزة للتعلم الذاتي
+A new Flutter project.
 
 ## Getting Started
 

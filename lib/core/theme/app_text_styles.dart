@@ -1,118 +1,47 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'app_colors.dart';
 
-/// أنماط النصوص — مستخرجة من تصميم Figma بدقة تامة
-abstract final class AppTextStyles {
-  // ─── Font Family ─────────────────────────────────────
-  static const String fontFamily = 'Tajawal';
+abstract class AppTextStyles {
+  static TextStyle get headerTitle => GoogleFonts.cairo(
+        fontSize: 22,
+        fontWeight: FontWeight.bold,
+        color: AppColors.foregroundText,
+      );
 
-  // ─── Display ─────────────────────────────────────────
-  static const TextStyle display = TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 24,
-    fontWeight: FontWeight.w700, // Bold
-    height: 1.3,
-    letterSpacing: -0.5,
-  );
+  static TextStyle get sectionTitle => GoogleFonts.cairo(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: AppColors.foregroundText,
+      );
 
-  // ─── Title ───────────────────────────────────────────
-  static const TextStyle title = TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 20,
-    fontWeight: FontWeight.w700, // Bold
-    height: 1.4,
-    letterSpacing: -0.3,
-  );
+  static TextStyle get cardTitle => GoogleFonts.cairo(
+        fontSize: 16,
+        fontWeight: FontWeight.w600,
+        color: AppColors.foregroundText,
+      );
 
-  // ─── Heading ─────────────────────────────────────────
-  static const TextStyle heading = TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 17,
-    fontWeight: FontWeight.w700, // Bold
-    height: 1.4,
-    letterSpacing: -0.2,
-  );
+  static TextStyle get bodyMedium => GoogleFonts.cairo(
+        fontSize: 14,
+        fontWeight: FontWeight.w500,
+        color: AppColors.foregroundText,
+      );
 
-  // ─── Body ────────────────────────────────────────────
-  static const TextStyle body = TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 15,
-    fontWeight: FontWeight.w400, // Regular
-    height: 1.5,
-    letterSpacing: 0,
-  );
+  static TextStyle get bodySmall => GoogleFonts.cairo(
+        fontSize: 12,
+        fontWeight: FontWeight.normal,
+        color: AppColors.mutedText,
+      );
 
-  static const TextStyle bodyMedium = TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 15,
-    fontWeight: FontWeight.w500, // Medium
-    height: 1.5,
-    letterSpacing: 0,
-  );
+  static TextStyle get badgeText => GoogleFonts.cairo(
+        fontSize: 10,
+        fontWeight: FontWeight.w600,
+        color: AppColors.mutedText,
+      );
 
-  static const TextStyle bodyBold = TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 15,
-    fontWeight: FontWeight.w700, // Bold
-    height: 1.5,
-    letterSpacing: 0,
-  );
-
-  // ─── Caption ─────────────────────────────────────────
-  static const TextStyle caption = TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 12,
-    fontWeight: FontWeight.w400, // Regular
-    height: 1.4,
-    letterSpacing: 0.1,
-  );
-
-  static const TextStyle captionMedium = TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 12,
-    fontWeight: FontWeight.w500, // Medium
-    height: 1.4,
-    letterSpacing: 0.1,
-  );
-
-  static const TextStyle captionBold = TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 12,
-    fontWeight: FontWeight.w700, // Bold
-    height: 1.4,
-    letterSpacing: 0.1,
-  );
-
-  // ─── Mini ────────────────────────────────────────────
-  static const TextStyle mini = TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 10,
-    fontWeight: FontWeight.w400, // Regular
-    height: 1.3,
-    letterSpacing: 0.2,
-  );
-
-  static const TextStyle miniBold = TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 10,
-    fontWeight: FontWeight.w700, // Bold
-    height: 1.3,
-    letterSpacing: 0.2,
-  );
-
-  // ─── Button ──────────────────────────────────────────
-  static const TextStyle button = TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 15,
-    fontWeight: FontWeight.w600, // SemiBold
-    height: 1.2,
-    letterSpacing: 0.1,
-  );
-
-  static const TextStyle buttonSmall = TextStyle(
-    fontFamily: fontFamily,
-    fontSize: 13,
-    fontWeight: FontWeight.w500, // Medium
-    height: 1.2,
-    letterSpacing: 0.1,
-  );
+  static TextStyle get buttonText => GoogleFonts.cairo(
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        color: Colors.white,
+      );
 }

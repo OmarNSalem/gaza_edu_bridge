@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../../../core/router/route_names.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_shadows.dart';
-import '../../../../core/theme/app_text_styles.dart';
+import 'package:gaza_edu_bridge/core/router/route_names.dart';
+import 'package:gaza_edu_bridge/core/theme/app_colors.dart';
+import 'package:gaza_edu_bridge/core/theme/app_text_styles.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -15,46 +11,147 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _opacityAnimation;
+
   @override
   void initState() {
     super.initState();
-    _navigateAfterDelay();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.6, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.0, 0.7, curve: Curves.easeOutBack),
+      ),
+    );
+
+    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: const Interval(0.2, 0.8, curve: Curves.easeIn),
+      ),
+    );
+
+    _controller.forward();
+
+    // انتقال تلقائي بعد انتهاء الأنميشن
+    Future.delayed(const Duration(milliseconds: 2600), () {
+      if (mounted) {
+        context.go(RouteNames.onboarding);
+      }
+    });
   }
 
-  Future<void> _navigateAfterDelay() async {
-    await Future.delayed(const Duration(milliseconds: 2600));
-    if (!mounted) return;
-
-    final prefs = await SharedPreferences.getInstance();
-    final onboardingDone = prefs.getBool('onboarding_done') ?? false;
-
-    if (!mounted) return;
-    context.go(onboardingDone ? RouteNames.auth : RouteNames.onboarding);
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       backgroundColor: AppColors.background,
       body: Stack(
         children: [
-          // ─── Radial Glow خلفي أخضر ───────────────────────────
-          Positioned.fill(
-            child: _CenteredGlow(),
-          ),
-
-          // ─── المحتوى الرئيسي: شعار + نصوص ───────────────────
-          Center(
-            child: _MainContent(),
-          ),
-
-          // ─── النقاط ونص الجامعة في الأسفل ────────────────────
+          // Blurred background circle
           Positioned(
-            bottom: 48,
-            left: 0,
-            right: 0,
-            child: _BottomSection(),
+            left: MediaQuery.of(context).size.width * 0.15,
+            top: MediaQuery.of(context).size.height * 0.3,
+            child: Container(
+              width: 280,
+              height: 280,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppColors.mutedText.withValues(alpha: 0.12),
+              ),
+              child: const SizedBox.shrink(),
+            ),
+          ),
+          Center(
+            child: AnimatedBuilder(
+              animation: _controller,
+              builder: (context, child) {
+                return Opacity(
+                  opacity: _opacityAnimation.value,
+                  child: Transform.scale(
+                    scale: _scaleAnimation.value,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Logo box
+                        Container(
+                          width: 96,
+                          height: 96,
+                          decoration: BoxDecoration(
+                            gradient: AppColors.primaryGradient,
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withValues(alpha: 0.25),
+                                blurRadius: 16,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.school_outlined,
+                            size: 48,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          'GazaEdu Bridge',
+                          style: AppTextStyles.headerTitle,
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'منصة غزة للتعلم الذاتي',
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColors.mutedText,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 48.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(3, (index) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                        child: _DotIndicator(index: index),
+                      );
+                    }),
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    'جامعة فلسطين — 2025/2026',
+                    style: AppTextStyles.bodySmall.copyWith(
+                      fontSize: 10,
+                      color: AppColors.mutedText,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -62,193 +159,56 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 }
 
-// ─────────────────────────────────────────────────────────────
-// غلاف مركزي للـ Glow
-// ─────────────────────────────────────────────────────────────
-class _CenteredGlow extends StatelessWidget {
-  const _CenteredGlow();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: _RadialGlowWidget());
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// Radial Glow
-// ─────────────────────────────────────────────────────────────
-class _RadialGlowWidget extends StatelessWidget {
-  const _RadialGlowWidget();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 288,
-      height: 288,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: RadialGradient(
-          colors: [
-            // opacity 0.2 للـ glow الأخضر
-            AppColors.primary.withValues(alpha: 0.2),
-            Colors.transparent,
-          ],
-          stops: const [0.0, 0.7],
-        ),
-      ),
-    )
-        .animate(onPlay: (controller) => controller.repeat())
-        .shimmer(
-          duration: const Duration(seconds: 3),
-          // لون shimmer بشفافية أخف
-          color: AppColors.primary.withValues(alpha: 0.1),
-        );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// المحتوى الرئيسي: شعار + نصوص
-// ─────────────────────────────────────────────────────────────
-class _MainContent extends StatelessWidget {
-  const _MainContent();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // ─── الشعار مع animation scale + fade ───────────────
-        Container(
-          width: 96,
-          height: 96,
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(24)),
-            gradient: AppColors.primaryGradient,
-            boxShadow: AppShadows.primaryGlow,
-          ),
-          child: const Icon(Icons.school, color: Colors.white, size: 44),
-        )
-            .animate()
-            .scale(
-              begin: const Offset(0.6, 0.6),
-              end: const Offset(1.0, 1.0),
-              duration: const Duration(milliseconds: 700),
-              curve: Curves.easeOutCubic,
-            )
-            .fadeIn(
-              duration: const Duration(milliseconds: 700),
-              curve: Curves.easeOut,
-            ),
-
-        const SizedBox(height: 16),
-
-        // ─── النصوص: الاسم + التاغلاين مع animation ─────────
-        const _LogoTexts(),
-      ],
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// نصوص الشعار
-// ─────────────────────────────────────────────────────────────
-class _LogoTexts extends StatelessWidget {
-  const _LogoTexts();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          'GazaEdu Bridge',
-          style: AppTextStyles.display.copyWith(color: AppColors.foreground),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'منصة غزة للتعلم الذاتي',
-          style: AppTextStyles.body.copyWith(color: AppColors.mutedForeground),
-          textAlign: TextAlign.center,
-        ),
-      ],
-    )
-        .animate()
-        .fadeIn(
-          delay: const Duration(milliseconds: 400),
-          duration: const Duration(milliseconds: 500),
-        )
-        .slideY(
-          begin: 0.2,
-          end: 0,
-          delay: const Duration(milliseconds: 400),
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeOut,
-        );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// القسم السفلي: نقاط التحميل + نص الجامعة
-// ─────────────────────────────────────────────────────────────
-class _BottomSection extends StatelessWidget {
-  const _BottomSection();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // ─── 3 نقاط وميض staggered ───────────────────────────
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(3, (index) => _LoadingDot(index: index)),
-        ),
-
-        const SizedBox(height: 8),
-
-        // ─── نص الجامعة ───────────────────────────────────────
-        Text(
-          'جامعة فلسطين — 2025/2026',
-          style: AppTextStyles.mini.copyWith(color: AppColors.mutedForeground),
-          textAlign: TextAlign.center,
-        )
-            .animate()
-            .fadeIn(
-              delay: const Duration(milliseconds: 1200),
-              duration: const Duration(milliseconds: 500),
-            ),
-      ],
-    );
-  }
-}
-
-// ─────────────────────────────────────────────────────────────
-// نقطة تحميل واحدة (staggered)
-// ─────────────────────────────────────────────────────────────
-class _LoadingDot extends StatelessWidget {
-  const _LoadingDot({required this.index});
-
+class _DotIndicator extends StatefulWidget {
+  const _DotIndicator({required this.index});
   final int index;
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 6,
-      height: 6,
-      margin: const EdgeInsets.symmetric(horizontal: 2),
-      decoration: const BoxDecoration(
-        color: AppColors.primary,
-        shape: BoxShape.circle,
+  State<_DotIndicator> createState() => _DotIndicatorState();
+}
+
+class _DotIndicatorState extends State<_DotIndicator> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _opacityAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat(reverse: true);
+
+    _opacityAnimation = Tween<double>(begin: 0.3, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Interval(
+          widget.index * 0.2,
+          1.0,
+          curve: Curves.easeInOut,
+        ),
       ),
-    )
-        .animate(onPlay: (controller) => controller.repeat())
-        .fadeIn(
-          delay: Duration(milliseconds: index * 200),
-          duration: const Duration(milliseconds: 1200),
-        )
-        .then()
-        .fadeOut(
-          duration: const Duration(milliseconds: 1200),
-        );
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: _opacityAnimation,
+      child: Container(
+        width: 6,
+        height: 6,
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppColors.primary,
+        ),
+      ),
+    );
   }
 }
